@@ -1,2 +1,1 @@
-# meerkat-pb
-MeerKAT Primary Beam
+# MeerKAT Primary Beam Model
