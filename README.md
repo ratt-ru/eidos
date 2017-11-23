@@ -1,4 +1,7 @@
-# MeerKAT Primary Beam Model
+# Eidos
+Primary beam modelling of radio telescope antennae.
+
+Only supports **MeerKAT L-band** for now.
 
 ## Dependencies
 scipy, numpy, lmfit, astropy
