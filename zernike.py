@@ -1,21 +1,14 @@
 #!/usr/bin/env python
-"""
-Created by Asad,KMB (khmbasad@gmail.com) on 8 May 2017
-
-If you want reconstruct beams of all requencies using Zernike polynbomials:
-    python zernike.py allfreq filename:str Nmodes:int threshold:int
-
-"""
 
 from spectrum import *
 from scipy.misc import factorial as fac
 from sys import argv
 from astropy.io import fits
+import argparse
 
 class Zernike(object):
     """
     Decompose and reconstruct a 2d image or 4d Jones matrix using Zernike polynomials
-    author: Julein N. Girard (jgirard@ska.ac.za)
     """
     def __init__(self, data=[], Nmodes=50, threshold=None, Npix=None, m=0, n=0, mode='recon', idx=None, thresh=None, freq=None):
         """
@@ -246,15 +239,3 @@ class Zernike(object):
             self.recon_trunc = np.sum(val * self.zernikel(i, self.grid_rho, self.grid_phi)*self.grid_mask for (i, val) in enumerate(self.coeffs_trunc))
             self.res_trunc = (abs(self.img) - abs(self.recon_trunc)) * self.grid_mask
             self.diff_full_trunc = (self.recon_full - self.recon_trunc) * self.grid_mask
-
-if __name__=='__main__':
-    coeffs = np.load('coeff_dict.npy').item()
-    try:
-        freq = range(int(argv[2]),int(argv[3]),int(argv[4]))
-        nchan = len(freq)
-    except: freq = float(argv[2])
-    mod = Zernike(coeffs, mode='recon', thresh=[15,8], Npix=int(argv[1]), freq=freq)
-    if isinstance(freq, (int, float)): data = mod.recons
-    else: data = mod.recons_all
-    fits.writeto('meerkat_primary_beam_zernike_model_real.fits'%nchan, data.real)
-    fits.writeto('meerkat_primary_beam_zernike_model_imag.fits'%nchan, data.real)
