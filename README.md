@@ -3,8 +3,29 @@
 ## Dependencies
 scipy, numpy, lmfit, astropy
 
-## Reconstruct beam
+## Reconstructing beam
+Download the package using: (if you have access)
+
 ``` bash
-python zernike.py 
-python zernike.py 257 856 1713 1
+git clone https://github.com/kmbasad/eidos
 ```
+
+To see the help file:
+
+``` bash
+python create_beam.py -h
+```
+
+To create a primary beam Jones matrix of MeerKAT for any frequency of L-band run the following command from within the `eidos` directory.
+
+``` bash
+python create_beam.py -p 256 -f 1400
+```
+
+Or to create beam cube for a list of frequencies use
+
+```bash
+python create_beam.py -p 256 -f 1300 1400 5
+```
+
+where 1300 MHz is the start frequency, 1400 MHz is the end, and 5 MHz is the frequency resolution.
