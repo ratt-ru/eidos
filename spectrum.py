@@ -1,10 +1,8 @@
 #!/usr/bin/env python
-import numpy as np, matplotlib.pyplot as plt, sys
-from numpy import pi, exp, sin, cos, tan
-from scipy import interpolate
 from scipy.linalg import svd
 from lmfit import Parameters, minimize, fit_report
 from scipy.fftpack import dct,idct
+from util import *
 
 def good_channels(nu=None, bads=None):
     if nu==None: nu = np.arange(856, 856+857)
@@ -80,7 +78,6 @@ def reconstruct(mod, nu, mid=1300, data=None):
     for i in range(2):
         for j in range(2):
             corr = corrs[i][j]
-            midx = freq_to_idx(nu, [0,mid])[1]
             modij = mod[corr]
             basei = modij['basei']
             recons['data'][corr] = data[i,j,:,basei].T
@@ -264,11 +261,6 @@ def flag_manual(coeffs, freqs, bads=([856,870], [920,960], [1125,1305], [1380,13
                     try: coeffs[i,j,idx,c] = 0.+1j*0.
                     except: coeffs[i,j,idx,c] = 0.
     return coeffs
-
-def freq_to_idx(freqs=np.arange(857)+856, sb=[0,1300]):
-    start = (np.abs(freqs-sb[0])).argmin()
-    end = (np.abs(freqs-sb[1])).argmin()
-    return start, end
 
 def csort(coeffs, freqs, sb=None, thresh=20):
     if sb: s, e = freq_to_idx(freqs, sb)

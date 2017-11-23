@@ -1,38 +1,12 @@
 #!/usr/bin/env python
-
-from spectrum import *
+from util import *
 from scipy.misc import factorial as fac
-from sys import argv
-from astropy.io import fits
-import argparse
 
 class Zernike(object):
     """
     Decompose and reconstruct a 2d image or 4d Jones matrix using Zernike polynomials
     """
     def __init__(self, data=[], Nmodes=50, threshold=None, Npix=None, m=0, n=0, mode='recon', idx=None, thresh=None, freq=None):
-        """
-        Inputs
-        -----------------
-        data : numpy array
-            2d image or 4d Jones matrix
-        nmodes : int
-            Number of modes, i. e. the maximum Noll index to use for decomposition and reconstruction
-        threshold : float
-            Percentage of highest energy coefficients to keep during truncation
-        mode : str
-            img, jones, cube, recon, decom, both
-
-        Outputs
-        ----------
-        coeffs
-        coeffs_trunc
-        recon_full
-        recon_trunc
-        res_full
-        res_trunc
-        """
-        
         self.Nmodes = Nmodes
         self.threshold = threshold
         self.thresh = thresh
@@ -44,7 +18,7 @@ class Zernike(object):
             if isinstance(freq, (float,int)):
                 ch = freq_to_idx(sb=[0,freq])[1]
                 self.dict_recon(data, ch)
-            if isinstance(freq, list):
+            if isinstance(freq, (list,np.ndarray)):
                 nchan = len(freq)
                 self.recons_all = np.zeros((2,2,nchan,self.npix,self.npix), dtype=np.complex)
                 for c in range(nchan):
