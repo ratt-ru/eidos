@@ -1,7 +1,7 @@
 # Eidos
 Primary beam modelling of radio telescope antennae.
 
-Only supports **MeerKAT L-band** for now.
+For now, only supports **MeerKAT L-band out to 3° radius**.
 
 ## Dependencies
 scipy, numpy, lmfit, astropy
@@ -35,7 +35,7 @@ where 1300 MHz is the start frequency, 1400 MHz is the end, and 5 MHz is the fre
 
 ## C A U T I O N
 
-* The diameter of the beams can only be 6 degrees, i. e. the beam can only be created within 6 degrees for now. If you want smaller field of view, please cut the necessary portion after creating a 6 deg beam.
+* The diameter of the beams can only be **6 degrees**, i. e. the beam can only be created within 6 degrees for now. If you want smaller field of view, please cut the necessary portion after creating a 6 deg beam.
 
 * The model is not available outside a circle of 6 deg diameter; so, if you need a square beam for imaging purposes, please cut a square portion from within the 6 deg circle.
 
