@@ -40,3 +40,5 @@ where 1300 MHz is the start frequency, 1400 MHz is the end, and 5 MHz is the fre
 * The model is not available outside a circle of 6 deg diameter; so, if you need a square beam for imaging purposes, please cut a square portion from within the 6 deg circle.
 
 * The beam model is less accurate at higher frequencies, and performs much better below 1400 MHz.
+
+* The diagonal terms of the model beam Jones matrix are much better known than the off-diagonal terms.
