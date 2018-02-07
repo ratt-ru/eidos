@@ -2,15 +2,19 @@
 from zernike import *
 from spectrum import *
 from util import *
-import argparse, sys
+import argparse
+import sys
+import os
 
-def main():
+pckg_dir = os.path.dirname(os.path.abspath(__file__))
+
+def main(argv):
     parser=argparse.ArgumentParser(description='Create primary beam model of MeerKAT')
     parser.add_argument('-p', help='Number of pixels on one side', type=int, required=True)
     parser.add_argument('-f', help='A single freq, or the start, end freqs, and channel width in MHz', nargs='+', type=float, required=True)
     parser.add_argument('-d', help='Diameter of the required beam', default=6., type=float, required=False)
-    parser.add_argument('-c', help='Coefficients file name', type=str, default='meerkat_coeff_dict.npy', required=False)
-    args=parser.parse_args()
+    parser.add_argument('-c', help='Coefficients file name', type=str, default=pckg_dir+'/data/meerkat_coeff_dict.npy', required=False)
+    args = parser.parse_args(argv)
 
     if len(args.f)==1: nu = float(args.f[0])
     elif len(args.f)==2: nu = np.arange(args.f[0], args.f[1], 1)
@@ -30,6 +34,3 @@ def main():
         filename = 'meerkat_pb_jones_cube_%ichannels.fits'%len(nu)
         write_fits(data, nu, args.d, filename)
         print "Saved as %s"%filename
-
-if __name__=='__main__':
-    main()
