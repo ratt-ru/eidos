@@ -12,7 +12,6 @@ requirements = [
 'numpy>=1.13.1',
 'scipy>=0.19.1',
 'astropy>=0.19.1',
-'matplotlib>=2.1.2',
 ]
 
 

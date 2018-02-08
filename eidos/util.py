@@ -1,9 +1,10 @@
 """
 Some utility functions to be used by other scripts
 """
-import numpy as np, matplotlib.pyplot as plt, datetime
+import numpy as np
 from numpy import pi, exp, sin, cos
 from astropy.io import fits
+import time
 
 def write_fits(beam, freqs, diameter, filename):
     data = np.zeros((2,)+beam.shape)
@@ -30,7 +31,7 @@ def write_fits(beam, freqs, diameter, filename):
         hdr['CDELT'+ii] = cdelts[i]
         hdr['CUNIT'+ii] = cunits[i]
     hdr['TELESCOP'] = 'MeerKAT'
-    hdr['DATE'] = str(datetime.datetime.now())
+    hdr['DATE'] = time.ctime()
     
     # Write real and imag parts of data
     hdu = fits.PrimaryHDU(data, header=hdr)
@@ -61,7 +62,7 @@ def write_fits_single(beam, freqs, diameter, filename):
         hdr['CDELT'+ii] = cdelts[i]
         hdr['CUNIT'+ii] = cunits[i]
     hdr['TELESCOP'] = 'MeerKAT'
-    hdr['DATE'] = str(datetime.datetime.now())
+    hdr['DATE'] = time.ctime()
     
     # Write real and imag parts of data
     hdu = fits.PrimaryHDU(data, header=hdr)

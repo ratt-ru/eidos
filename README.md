@@ -4,7 +4,7 @@ Primary beam modelling of radio telescope antennae.
 For now, only supports **MeerKAT L-band out to 3° radius**.
 
 ## Dependencies
-python-tk scipy, numpy, lmfit, astropy
+scipy, numpy, lmfit, astropy
 
 ## Reconstructing beam
 Download the package using: (if you have access)
