@@ -10,25 +10,25 @@ scipy, numpy, lmfit, astropy
 Download the package using: (if you have access)
 
 ``` bash
-git clone https://github.com/kmbasad/eidos
+pip install git+https://github.com/kmbasad/eidos
 ```
 
 To see the help file:
 
 ``` bash
-python create_beam.py -h
+eidos -h
 ```
 
-To create a primary beam Jones matrix of MeerKAT for any frequency of L-band run the following command from within the `eidos` directory.
+To create a primary beam Jones matrix of MeerKAT for any frequency of L-band run the following command.
 
 ``` bash
-python create_beam.py -p 256 -f 1400
+eidos  -p 256 -f 1400
 ```
 
 Or to create beam cube for a list of frequencies use
 
 ```bash
-python create_beam.py -p 256 -f 1300 1400 5
+eidos -p 256 -f 1300 1400 5
 ```
 
 where 1300 MHz is the start frequency, 1400 MHz is the end, and 5 MHz is the frequency resolution.
