@@ -13,6 +13,7 @@ def main(argv):
     parser.add_argument('-f', '--freq', help='A single freq, or the start, end freqs, and channel width in MHz', nargs='+', type=float, required=True)
     parser.add_argument('-c', '--coeficients-file', help='Coefficients file name', type=str, required=True)
     parser.add_argument('-P', '--prefix', help='Prefix of output beam beam file(s)', type=str, required=False)
+    parser.add_argument('-t', '--nfiles', help='1 file or 8 files?', type=int, default=1, required=False)
 
     args = parser.parse_args(argv)
 
@@ -34,10 +35,14 @@ def main(argv):
 
     if isinstance(nu, (int, float)):
         data = mod.recons
-        filename = 'meerkat_pb_jones_%iMHz.fits'%int(nu)
         write_fits_single(data, nu, args.diameter, filename)
         print 'Saved as %s'%filename
     else:
-        data = mod.recons_all
-        write_fits(data, nu, args.diameter, filename)
-        print "Saved as %s"%filename
+        if args.nfiles == 1:
+            data = mod.recons_all
+            write_fits(data, nu, args.diameter, filename)
+            print "Saved as %s"%filename
+        else:
+            data = mod.recons_all
+            write_fits_eight(data, nu, args.diameter, filename)
+            print "Saved as 8 files with prefix %s"%filename
