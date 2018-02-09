@@ -6,31 +6,38 @@ import argparse
 import sys
 import os
 
-pckg_dir = os.path.dirname(os.path.abspath(__file__))
-
 def main(argv):
     parser=argparse.ArgumentParser(description='Create primary beam model of MeerKAT')
-    parser.add_argument('-p', help='Number of pixels on one side', type=int, required=True)
-    parser.add_argument('-f', help='A single freq, or the start, end freqs, and channel width in MHz', nargs='+', type=float, required=True)
-    parser.add_argument('-d', help='Diameter of the required beam', default=6., type=float, required=False)
-    parser.add_argument('-c', help='Coefficients file name', type=str, default=pckg_dir+'/data/meerkat_coeff_dict.npy', required=False)
+    parser.add_argument('-p', '--pixels', help='Number of pixels on one side', type=int, required=True)
+    parser.add_argument('-d', '--diameter', help='Diameter of the required beam', default=6., type=float, required=False)
+    parser.add_argument('-f', '--freq', help='A single freq, or the start, end freqs, and channel width in MHz', nargs='+', type=float, required=True)
+    parser.add_argument('-c', '--coeficients-file', help='Coefficients file name', type=str, required=True)
+    parser.add_argument('-P', '--prefix', help='Prefix of output beam beam file(s)', type=str, required=False)
+
     args = parser.parse_args(argv)
 
-    if len(args.f)==1: nu = float(args.f[0])
-    elif len(args.f)==2: nu = np.arange(args.f[0], args.f[1], 1)
-    elif len(args.f)==3: nu = np.arange(args.f[0], args.f[1], args.f[2])
+    if len(args.freq)==1: 
+        nu = float(args.freq[0])
+    elif len(args.freq)==2: 
+        nu = np.arange(args.freq[0], args.freq[1], 1)
+    elif len(args.freq)==3: 
+        nu = np.arange(args.freq[0], args.freq[1], args.freq[2])
 
-    coeffs = np.load(args.c).item()
+    coeffs = np.load(args.coeficients_file).item()
     
-    mod = Zernike(coeffs, mode='recon', thresh=[15,8], Npix=args.p, freq=nu)
+    mod = Zernike(coeffs, mode='recon', thresh=[15,8], Npix=args.pixels, freq=nu)
+
+    if args.prefix:
+        filename = args.prefix
+    else:
+        filename = 'meerkat_pb_jones_cube_%ichannels.fits'%len(nu)
 
     if isinstance(nu, (int, float)):
         data = mod.recons
         filename = 'meerkat_pb_jones_%iMHz.fits'%int(nu)
-        write_fits_single(data, nu, args.d, filename)
+        write_fits_single(data, nu, args.diameter, filename)
         print 'Saved as %s'%filename
     else:
         data = mod.recons_all
-        filename = 'meerkat_pb_jones_cube_%ichannels.fits'%len(nu)
-        write_fits(data, nu, args.d, filename)
+        write_fits(data, nu, args.diameter, filename)
         print "Saved as %s"%filename
