@@ -35,12 +35,9 @@ def write_fits(beam, freqs, diameter, filename):
     
     # Write real and imag parts of data
     hdu = fits.PrimaryHDU(data, header=hdr)
-    hdu.writeto(filename, overwrite=True)
+    hdu.writeto(filename+'.fits', overwrite=True)
 
 def write_fits_cube(beam, freqs, diameter, filename):
-    data = np.zeros(beam.shape)
-    data[0,...] = beam.real
-    data[1,...] = beam.imag
     
     # Create header
     hdr = fits.Header()
@@ -54,7 +51,7 @@ def write_fits_cube(beam, freqs, diameter, filename):
     if nx%2 == 0: crpixx, crpixy = nx/2+0.5, ny/2+0.5
     elif nx%2 == 1: crpixx, crpixy = nx/2+1, ny/2+1
     crpixs = [crpixx, crpixy, 1, 1, 1, 1]
-    for i in range(len(data.shape)):
+    for i in range(len(beam.shape)):
         ii = str(i+1)
         hdr['CTYPE'+ii] = ctypes[i]
         hdr['CRPIX'+ii] = crpixs[i]
@@ -65,16 +62,17 @@ def write_fits_cube(beam, freqs, diameter, filename):
     hdr['DATE'] = time.ctime()
     
     # Write real and imag parts of data
-    hdu = fits.PrimaryHDU(data, header=hdr)
+    hdu = fits.PrimaryHDU(beam, header=hdr)
     hdu.writeto(filename, overwrite=True)
 
 def write_fits_eight(data, freqs, diameter, prefix):
-    P, C = ['real', 'imag'], ['X', 'Y']
-    for p in range(2):
-        for i in range(2):
-            for j in range(2):
-                filename = prefix+'_%s%s_%s.fits'%(C[i],C[j],P[p])
-                write_fits_cube(data[p,i,j,:,:,:], freqs, diameter, filename)
+    C = ['x', 'y']
+    for i in range(2):
+        for j in range(2):
+            filename = prefix+'_%s%s'%(C[i],C[j])
+            write_fits_cube(data[i,j,:,:,:].real, freqs, diameter, filename+'_re.fits')
+            write_fits_cube(data[i,j,:,:,:].imag, freqs, diameter, filename+'_im.fits')
+
 
 def write_fits_single(beam, freqs, diameter, filename):
     data = np.zeros((2,)+beam.shape)
