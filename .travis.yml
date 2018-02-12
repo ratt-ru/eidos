@@ -1,0 +1,16 @@
+language: python
+sudo: false
+python:
+- '2.7'
+install:
+- python setup.py install
+script:
+- true
+deploy:
+  provider: pypi
+  user: kmbasad
+  password:
+      secure: loJaqUlM6U3MeRUJUidF7vzw5R2rOupo8/fAyd5dsBDvbimPuWA29pZlfWPs1JCDJqsyCdP8HzuzXn5F0g/hTc4k9o21Kj9IEDjB3a49Ir3QNcdb8diE+YvKqmZii6zHGmsPw596q/+3XeMEsfYBNoeSJdne8W8zjx1KGYL6BrEMcn2R+IJnd9nx5YAuroqlwvPgJVHvkvjt3jKT5PwSesyLitOeVwSKcBfZks8h2Pqts92P9nKq+UZJkCvZdiSv0gkQRTX323CxfZCvKBEKSSGPRhsAhPgg4JkGn33a/iK/Jga4CTeVux5/5woj1iTOrN3j+VbMeel7QhSkYFuZ4CdNMLFl5x8Sk461ydSYmLis66Up4F6/5zavDNKI1ZL7SNYt56557TDBC7x3fcq35MdWSX36LLsKi8Y8EG5FfDSIPGNeR6B50gNTHNIaJUJxu5jkkvg0p3kgloF73TsuRlgu14vUSGc2NrEvYa5N1WiwXN4KxVQ+awvtw51hTU1ib8uUq7xsDrH2gUuQMcnbiw79GdlBPIUcioSVgPZoSfkrlcbKUxXyF4tJeYZ4y1o2vdbIvRJyfY+JWN0nNkquVd/bq/W9I7mexSCDxDL9CFutj1iPIyBSiGZfkoCdElPej3F/i7mceqx2tBRr8wYaAHcqq+Q86QGHHu86pO47b10=
+  on:
+    tags: true
+    repo: kmbasad/eidos
