@@ -13,6 +13,8 @@ Download the package using: (if you have access)
 pip install git+https://github.com/kmbasad/eidos
 ```
 
+Acquire the MeerKAT coefficient file by sending an email to <kasad@ska.ac.za>.
+
 To see the help file:
 
 ``` bash
@@ -22,13 +24,13 @@ eidos -h
 To create a primary beam Jones matrix of MeerKAT for any frequency of L-band run the following command.
 
 ``` bash
-eidos  -p 256 -f 1400
+eidos -c <coefficient_file_name.npy>  -p 256 -f 1400
 ```
 
 Or to create beam cube for a list of frequencies use
 
 ```bash
-eidos -p 256 -f 1300 1400 5
+eidos -c <coefficient_file_name.npy> -p 256 -f 1300 1400 5
 ```
 
 where 1300 MHz is the start frequency, 1400 MHz is the end, and 5 MHz is the frequency resolution.
