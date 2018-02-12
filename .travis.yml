@@ -1,9 +1,11 @@
 language: python
-sudo: false
-python:
-- '2.7'
+sudo: required
+services:
+- docker 
+before_install:
+- true
 install:
-- python setup.py install
+- docker build -t eidos:build .
 script:
 - true
 deploy:
