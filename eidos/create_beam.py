@@ -11,7 +11,7 @@ def main(argv):
     parser.add_argument('-p', '--pixels', help='Number of pixels on one side', type=int, required=True)
     parser.add_argument('-d', '--diameter', help='Diameter of the required beam', default=6., type=float, required=False)
     parser.add_argument('-f', '--freq', help='A single freq, or the start, end freqs, and channel width in MHz', nargs='+', type=float, required=True)
-    parser.add_argument('-c', '--coeficients-file', help='Coefficients file name', type=str, required=True)
+    parser.add_argument('-c', '--coefficients-file', help='Coefficients file name', type=str, required=True)
     parser.add_argument('-P', '--prefix', help='Prefix of output beam beam file(s)', type=str, required=False)
     parser.add_argument('-o8', '--output-eight', help='Output complex volatge beams (8 files)', action='store_true')
 
@@ -24,7 +24,7 @@ def main(argv):
     elif len(args.freq)==3: 
         nu = np.arange(args.freq[0], args.freq[1], args.freq[2])
 
-    coeffs = np.load(args.coeficients_file).item()
+    coeffs = np.load(args.coefficients_file).item()
     
     mod = Zernike(coeffs, mode='recon', thresh=[15,8], Npix=args.pixels, freq=nu)
 
