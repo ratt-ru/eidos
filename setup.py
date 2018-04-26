@@ -28,6 +28,7 @@ setup(name = PACKAGE_NAME,
     packages = [PACKAGE_NAME],
     install_requires = requirements,
     include_package_data = True,
+    package_data = { "eidos/data" : ["meerkat_coeff_dict.npy"] },
     scripts = ['bin/' + j for j in os.listdir('bin')],
     license = ['GNU GPL v3'],
     classifiers = [

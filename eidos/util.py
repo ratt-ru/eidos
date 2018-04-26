@@ -103,7 +103,7 @@ def write_fits_single(beam, freqs, diameter, filename):
     
     # Write real and imag parts of data
     hdu = fits.PrimaryHDU(data, header=hdr)
-    hdu.writeto(filename, overwrite=True)
+    hdu.writeto(filename+'.fits', overwrite=True)
 
 def freq_to_idx(freqs=np.arange(857)+856, sb=[0,1300]):
     # convert a frequency to an index, default is MeerKAT L-band specifications
