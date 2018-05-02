@@ -8,10 +8,9 @@ scipy, numpy, lmfit, astropy
 
 ## Reconstructing beam
 * Download the package using: `pip install git+https://github.com/kmbasad/eidos`
-* Acquire the MeerKAT coefficient file by sending an email to <kasad@ska.ac.za>.
 * To see the help file: `eidos -h`
-* To create a primary beam Jones matrix of MeerKAT for any frequency of L-band run the following command `eidos -c <coefficient_file_name.npy>  -p 256 -f 1400`.
-* Or to create beam cube for a list of frequencies use `eidos -c <coefficient_file_name.npy> -p 256 -f 1300 1400 5` where 1300 MHz is the start frequency, 1400 MHz is the end, and 5 MHz is the frequency resolution.
+* To create a primary beam Jones matrix of MeerKAT for any frequency of L-band run the following command `eidos -p 257 -f 1400`.
+* Or to create beam cube for a list of frequencies use `eidos -p 257 -f 1300 1400 5` where 1300 MHz is the start frequency, 1400 MHz is the end, and 5 MHz is the frequency resolution.
 
 ## C A U T I O N
 
