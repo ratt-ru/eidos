@@ -6,6 +6,22 @@ from numpy import pi, exp, sin, cos
 from astropy.io import fits
 import time
 
+def normalise(d):
+    xmid=int(round(d.shape[2]/2.))-1
+    ymid=int(round(d.shape[3]/2.))-1
+    m = d[:,:,xmid,ymid]
+    m = np.linalg.inv(m)
+    for i in range(d.shape[2]):
+        for j in range(d.shape[3]):
+            d[:,:,i,j] = np.dot(m, d[:,:,i,j])
+    return d
+
+def normalise_multifreq(d):
+    data = np.zeros(d.shape, dtype=np.complex)
+    for i in range(d.shape[2]):
+        data[:,:,i,:,:] = normalise(d[:,:,i,:,:])
+    return data
+
 def write_fits(beam, freqs, diameter, filename):
     data = np.zeros((2,)+beam.shape)
     data[0,...] = beam.real

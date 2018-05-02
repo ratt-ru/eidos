@@ -17,6 +17,7 @@ def main(argv):
         default=os.path.join(package_directory, "data", "meerkat_coeff_dict.npy") )
     parser.add_argument('-P', '--prefix', help='Prefix of output beam beam file(s)', type=str, required=False)
     parser.add_argument('-o8', '--output-eight', help='Output complex volatge beams (8 files)', action='store_true')
+    parser.add_argument('-N', '--normalise', help='Normalise the E-Jones wrt central pixels', action='store_true')
 
     args = parser.parse_args(argv)
 
@@ -38,16 +39,24 @@ def main(argv):
         except: nchannels = 1
         filename = 'meerkat_pb_jones_cube_%ichannels'%nchannels
 
+    
+    # get E-Jones
+    if isinstance(nu, (int, float)): data = mod.recons
+    else: data = mod.recons_all
+
+    # Normalise
+    if args.normalise:
+        if isinstance(nu, (int, float)): data = normalise(data)
+        else: data = normalise_multifreq(data)
+
+    # Save E-Jones as fits files
     if isinstance(nu, (int, float)):
-        data = mod.recons
         write_fits_single(data, nu, args.diameter, filename)
-        print 'Saved as %s'%filename
+        print 'Saved as %s.fits'%filename
     else:
         if args.output_eight:
-            data = mod.recons_all
             write_fits_eight(data, nu, args.diameter, filename)
-            print "Saved as 8 files with prefix %s"%filename
+            print "Saved as 8 files with prefix %s.fits"%filename
         else:
-            data = mod.recons_all
             write_fits(data, nu, args.diameter, filename)
-            print "Saved as %s"%filename
+            print "Saved as %s.fits"%filename
