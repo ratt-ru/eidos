@@ -15,14 +15,16 @@ class Zernike(object):
         self.idx = idx
 
         if isinstance(data, dict):
+            print "Calculating primary beam Jones using Zernike polynomials at"
             if isinstance(freq, (float,int)):
+                print " %i MHz"%int(freq)
                 ch = freq_to_idx(sb=[0,freq])[1]
                 self.dict_recon(data, ch)
             if isinstance(freq, (list,np.ndarray)):
                 nchan = len(freq)
                 self.recons_all = np.zeros((2,2,nchan,self.npix,self.npix), dtype=np.complex)
                 for c in range(nchan):
-                    print freq[c],
+                    print " %i MHz"%int(freq[c])
                     ch = freq_to_idx(sb=[0,freq[c]])[1]
                     self.dict_recon(data, ch)
                     self.recons_all[:,:,c,:,:] = self.recons
