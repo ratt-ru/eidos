@@ -16,7 +16,7 @@ scipy, numpy, lmfit, astropy
 * If you want Stokes I beam instead of the Jones matrix, run `eidos -p 257 -f 1350 -S I`. You can put `I,Q,U,V` and any of their combinations as inputs fot the `-S` option. The `-S IQ` will give you the leakage map from Q to I and so on for all the other combinations.
 * If you want the full Mueller matrix, which will be real for a single dish, because it is the auto-correlation of a complex Jones matrix, then run `eidos -p 257 -f 1350 -S M`.
 * To create beam cube for a list of frequencies use `eidos -p 257 -f 1300 1400 5` where 1300 MHz is the start frequency, 1400 MHz is the end, and 5 MHz is the frequency resolution.
-* Normally the beams are given as a hypercube containing the real and imaginary parts of all the elemnts of the Jones matrix at all the frequencies. However, you can get 8 separate files for the real and imaginary parts of the 4 Jones elements by adding the `-o8` option.
+* Normally the beams are given as a hypercube containing all the elemnts of the Jones matrix at all frequencies. However, you can get 8 separate files for the real and imaginary parts of the 4 Jones elements by adding the `-o8` option.
 
 ## C A U T I O N
 
