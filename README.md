@@ -8,7 +8,15 @@ scipy, numpy, lmfit, astropy
 
 ## Installation
 * Directly from github as `pip install git+https://github.com/kmbasad/eidos`.
-* If you want to install a local version that you can play around with, first, download using `git clone https://github.com/kmbasad/eidos` and then install the downloaded package as `pip install -e /local/path/to/eidos`. This way you can change anything you want and run your own tests.
+* If you want to install a local version that you can play around with, first, download using 
+
+`git clone https://github.com/kmbasad/eidos` 
+
+and then install the downloaded package as 
+
+`pip install -e /local/path/to/eidos`. 
+
+This way you can change anything you want and run your own tests.
 * The help file can be seen by typing `eidos -h`.
 
 ## Reconstructing beam
