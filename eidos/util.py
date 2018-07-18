@@ -53,7 +53,7 @@ def write_fits(beam, freqs, diameter, filename):
     if beam.shape[0]==2: xy = ['H', 'V']
     elif beam.shape[0]==4: xy = ['Mx', 'My']
     else: xy = ['', '']
-    ctypes = ['X', 'Y', 'FREQ', xy[0], xy[1]]
+    ctypes = ['L', 'M', 'FREQ', xy[0], xy[1]]
     crvals = [0.0, 0.0, fMHz[0], 0, 0, 0]
     cdelts = [diam/beam.shape[-2], diam/beam.shape[-1], df, 1, 1]
     cunits = ['deg', 'deg', 'Hz', '', '']
@@ -84,7 +84,7 @@ def write_fits_cube(beam, freqs, diameter, filename):
     try: df = fMHz[1]-fMHz[0]
     except: df = 1e6
     diam = float(diameter)
-    ctypes = ['X', 'Y', 'FREQ']
+    ctypes = ['L', 'M', 'FREQ']
     crvals = [0.0, 0.0, fMHz[0]]
     cdelts = [diam/beam.shape[-2], diam/beam.shape[-1], df]
     cunits = ['deg', 'deg', 'Hz']
