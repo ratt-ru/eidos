@@ -7,11 +7,11 @@ For now, only supports **MeerKAT L-band out to 3° radius**.
 scipy, numpy, lmfit, astropy
 
 ## Installation
-Directly from github as `pip install git+https://github.com/kmbasad/eidos`.
+Directly from github as `pip install git+https://github.com/ratt-ru/eidos`.
 
 If you want to install a local version that you can play around with, first, download using 
 
-`git clone https://github.com/kmbasad/eidos` 
+`git clone https://github.com/ratt-ru/eidos`  
 
 and then install the downloaded package as 
 
