@@ -61,6 +61,7 @@ def main(argv):
 
     if args.coeff=='mh': filename=os.path.join(package_directory, "data", "meerkat_beam_coeffs_ah_zp_dct.npy")
     elif args.coeff=='me': filename=os.path.join(package_directory, "data", "meerkat_beam_coeffs_em_zp_dct.npy")
+    elif args.coeff=='vh': raise Exception("JVLA option is coming soon")
 
     # Create parameter list for Zernike reconstruction
 
