@@ -6,46 +6,18 @@ class Zernike(object):
     """
     Decompose and reconstruct a 2d image or 4d Jones matrix using Zernike polynomials
     """
-    def __init__(self, data=[], Nmodes=50, threshold=None, Npix=None, m=0, n=0, mode='recon', idx=None, thresh=None, freq=None):
+    def __init__(self, data=[], Nmodes=50, threshold=None, Npix=None, m=0, n=0, mode='recon', idx=None, freq=None, fname=''):
         self.Nmodes = Nmodes
         self.threshold = threshold
-        self.thresh = thresh
         self.mode = mode
         self.npix=Npix
         self.idx = idx
 
-        if isinstance(data, dict):
-            print "Calculating primary beam Jones using Zernike polynomials at"
-            if isinstance(freq, (float,int)):
-                print " %i MHz"%int(freq)
-                ch = freq_to_idx(sb=[0,freq])[1]
-                self.dict_recon(data, ch)
-            if isinstance(freq, (list,np.ndarray)):
-                nchan = len(freq)
-                self.recons_all = np.zeros((2,2,nchan,self.npix,self.npix), dtype=np.complex)
-                for c in range(nchan):
-                    print " %i MHz"%int(freq[c])
-                    ch = freq_to_idx(sb=[0,freq[c]])[1]
-                    self.dict_recon(data, ch)
-                    self.recons_all[:,:,c,:,:] = self.recons
+        if mode=='img':
+            self.img = data
+            self.reconstruct()
 
-        else:
-            if mode=='img':
-                self.img = data
-                self.reconstruct()
-
-            if 'jones' in mode: self.jones_images(data)
-            elif 'cube' in mode: self.all_freqs(data)
-
-        if mode=='basis':
-            if not Nmodes:
-                self.unit_disk(npix=Npix)
-                self.basis = self.zernike(m, n, self.grid_rho, self.grid_phi)*self.grid_mask
-                self.basis = circular_mask(np.array(self.basis))
-            if Nmodes:
-                self.unit_disk(npix=Npix)
-                self.basis = [self.zernikel(i, self.grid_rho, self.grid_phi)*self.grid_mask for i in range(Nmodes)]
-                self.basis = circular_mask(np.array(self.basis))
+        if 'jones' in mode: self.jones_images(data)
 
     def jones_images(self, data):
         self.coeffs_J = self.coeffs_trunc_J = np.zeros((data.shape[0], data.shape[1], self.Nmodes), dtype=np.complex)
@@ -53,14 +25,17 @@ class Zernike(object):
         if 'recon' in self.mode: self.recon = np.zeros((2,2,self.npix,self.npix), dtype=np.complex)
         for i in range(data.shape[0]):
             for j in range(data.shape[1]):
-                print "Fitting Zernike polynomials to Jones %i %i"%(i,j)
+                #print "Fitting Zernike polynomials to Jones %i %i"%(i,j)
+                if self.threshold:
+                    if i==j: self.thresh = self.threshold[0]
+                    elif i!=j: self.thresh = self.threshold[1]
                 if 'decom' in self.mode:
                     self.img = data[i,j,:,:]
                     self.decompose()
                     self.coeffs_J[i,j,:] = self.coeffs
                 elif 'recon' in self.mode:
                     self.coeffs = data[i,j,:]
-                    try: self.ind = self.idx[i,j,:]
+                    try: self.ind = list(self.idx[i,j,:])
                     except: self.ind = None
                     self.recon[i,j,:,:] = self.reconstruct()
                 elif 'both' in self.mode:
@@ -70,43 +45,6 @@ class Zernike(object):
                     self.coeffs_trunc_J[i,j,:] = self.coeffs_trunc
                     self.recon_full_J[i,j,:,:] = self.recon_full
                     self.recon_trunc_J[i,j,:,:] = self.recon_trunc
-
-    def dict_recon(self, data, ch):
-        corrs = [['xx','xy'],['yx','yy']]
-        self.recons = np.zeros((2,2,self.npix,self.npix), dtype=np.complex)
-        for i in range(2):
-            for j in range(2):
-                corr = corrs[i][j]
-                dat, ind = data[corr], data['basei'][corr]
-                if i==j: thresh = self.thresh[0]
-                elif i!=j: thresh = self.thresh[1]
-                self.coeffs, self.ind = dat[ch,:thresh], ind[:thresh]
-                self.reconstruct()
-                self.recons[i,j,:,:] = self.recon
-
-    def all_freqs(self, fits_file):
-        start = time.time()
-        d = fits.getdata(fits_file)
-        h = fits.getheader(fits_file)
-        dc = d[0,...] + 1j * d[1,...]
-        dc = np.nan_to_num(dc)
-        print dc.shape
-        recons = np.zeros(dc.shape, dtype=np.complex)
-        coeffs = np.zeros((2,2,dc.shape[2],self.Nmodes), dtype=np.complex)
-        for f in range(dc.shape[2]):
-            print '... Channel %i'%(f+1)
-            self.jones_images(dc[:,:,f,:,:])
-            if 'decom' in self.mode: coeffs[:,:,f,:] = self.coeffs_J
-            elif 'recon' in self.mode: recons[:,:,f,:,:] = self.recon
-
-        if 'decom' in self.mode: np.save(fits_file[:-5]+'_zp_%icoeffs.npy'%self.Nmodes, coeffs)
-
-        elif 'recon' in self.mode:
-            d[0,...], d[1,...] = recons.real, recons.imag
-            fits.writeto(fits_file[:-5]+'_zp_recon_%icoeffs.fits'%self.Nmodes, circular_mask(d), h, overwrite=True)
-
-        end = time.time()
-        print "... Time taken: %.2f minutes"%((end-start)/60.)
 
     def zernike_rad(self, m, n, rho):
         """
@@ -118,7 +56,7 @@ class Zernike(object):
         if ((n-m) % 2):
             return rho*0.0
         pre_fac = lambda k: (-1.0)**k * fac(n-k) / ( fac(k) * fac( (n+m)/2.0 - k ) * fac( (n-m)/2.0 - k ) )
-        return sum(pre_fac(k) * rho**(n-2.0*k) for k in xrange((n-m)/2+1))
+        return sum(pre_fac(k) * rho**(n-2.0*k) for k in np.arange((n-m)/2+1))
 
     def zernike(self, m, n, rho, phi):
         """
@@ -186,32 +124,62 @@ class Zernike(object):
         # Dot product between inverse covariance matrix and the innerprod to get the coeffs
         self.coeffs = np.dot(self.cov_mat_in, self.innerprod)
 
-    def truncate(self):
+    def truncate(self, thresh):
         """Truncate the coefficients upto the given threshold"""
         sortedindex = np.argsort(np.abs(self.coeffs))[::-1]
         Ncoeff = self.coeffs.shape[-1]
-        cutoff = np.int(np.round(Ncoeff*self.threshold/100.))
+        cutoff = np.int(np.round(Ncoeff*thresh/100.))
         
-        print "Keeping %2.0f %% (N=%s) of the biggest coefficients"%(self.threshold,cutoff)
+        #print "Keeping %2.0f %% (N=%s) of the biggest coefficients"%(thresh,cutoff)
 
         self.coeffs_trunc = self.coeffs.copy() # copy of all coeff
         self.coeffs_trunc[sortedindex[cutoff:]] = 0 # put coeff below threshold to 0
+
+    def best_coeffs(self, C, I):
+        idx = np.argsort(np.abs(C))[::-1][:self.thresh]
+        return C[idx], I[idx]
 
     def reconstruct(self):
         """Reconstruct a model image from the coeffcicients"""
         if 'recon' in self.mode:
             self.unit_disk(self.npix)
-            if self.threshold!=None:
-                self.truncate()
-                return np.sum(val * self.zernikel(i, self.grid_rho, self.grid_phi)*self.grid_mask for (i, val) in enumerate(self.coeffs_trunc))
+            if self.ind:
+                if self.thresh: C, I = self.best_coeffs(self.coeffs, np.array(self.ind))
+                else: C, I = self.coeffs, self.ind
+                return np.sum(C[i] * self.zernikel(val, self.grid_rho, self.grid_phi)*self.grid_mask for (i, val) in enumerate(I))
             else:
-                self.recon = np.sum(self.coeffs[i] * self.zernikel(val, self.grid_rho, self.grid_phi)*self.grid_mask for (i, val) in enumerate(self.ind))
+                self.truncate(self.thresh)
+                return np.sum(val * self.zernikel(i, self.grid_rho, self.grid_phi)*self.grid_mask for (i, val) in enumerate(self.coeffs_trunc))
 
         if 'both' in self.mode:
             self.decompose()
             self.recon_full = np.sum(val * self.zernikel(i, self.grid_rho, self.grid_phi)*self.grid_mask for (i, val) in enumerate(self.coeffs))
             self.res_full = (abs(self.img) - abs(self.recon_full))  * self.grid_mask
-            self.truncate()
+            self.truncate(self.thresh)
             self.recon_trunc = np.sum(val * self.zernikel(i, self.grid_rho, self.grid_phi)*self.grid_mask for (i, val) in enumerate(self.coeffs_trunc))
             self.res_trunc = (abs(self.img) - abs(self.recon_trunc)) * self.grid_mask
             self.diff_full_trunc = (self.recon_full - self.recon_trunc) * self.grid_mask
+
+def noll_to_zern(j):
+        j += 1
+
+        n = 0
+        j1 = j-1
+        while (j1 > n):
+            n += 1
+            j1 -= n
+
+        m = (-1)**j * ((n % 2) + 2 * int((j1+((n+1)%2)) / 2.0 ))
+        return (n, m)
+
+def decom_par(data):
+    Z = Zernike(data, mode='jones decom', Nmodes=300, threshold=[15,8])
+    return Z.coeffs_J
+
+def recon_par(data):
+    coeffs, nolls, npix, thr = data[0], data[1], data[2], data[3]
+    Zr = Zernike(coeffs[0,...], idx=nolls[0,...], threshold=[thr,thr], Npix=npix, mode='jones recon')
+    Zi = Zernike(coeffs[1,...], idx=nolls[1,...], threshold=[thr,thr], Npix=npix, mode='jones recon')
+    B = Zr.recon + 1j*Zi.recon
+    return B
+    

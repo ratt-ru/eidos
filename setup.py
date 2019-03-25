@@ -8,27 +8,26 @@ except:
     from distutils.core import setup
 
 requirements = [
-'lmfit>=0.1.0',
-'numpy>=1.13.1',
-'scipy>=0.19.1',
-'astropy>=0.19.1',
+'numpy',
+'scipy',
+'astropy',
 'future',
 ]
 
 
 PACKAGE_NAME = 'eidos'
-__version__ = '0.1.0'
+__version__ = '1.0'
 
 setup(name = PACKAGE_NAME,
     version = __version__,
     description = 'Modelling primary beams of radio telescope antennae',
     author = 'Khan M. B Asad',
     author_email = 'khmbasad@gmail.com',
-    url = 'https://github.com/kmbasad/eidos',
+    url = 'https://github.com/ratt-ru/eidos',
     packages = [PACKAGE_NAME],
     install_requires = requirements,
     include_package_data = True,
-    package_data = { "eidos/data" : ["meerkat_coeff_dict.npy"] },
+    package_data = { "eidos/data" : ["meerkat_beam_coeffs_ah_zp_dct.npy", "meerkat_beam_coeffs_em_zp_dct.npy"] },
     scripts = ['bin/' + j for j in os.listdir('bin')],
     license = ['GNU GPL v3'],
     classifiers = [
