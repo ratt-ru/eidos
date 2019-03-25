@@ -8,10 +8,9 @@ except:
     from distutils.core import setup
 
 requirements = [
-'lmfit>=0.1.0',
-'numpy>=1.13.1',
-'scipy>=0.19.1',
-'astropy>=0.19.1',
+'numpy',
+'scipy',
+'astropy',
 'future',
 ]
 
@@ -24,7 +23,7 @@ setup(name = PACKAGE_NAME,
     description = 'Modelling primary beams of radio telescope antennae',
     author = 'Khan M. B Asad',
     author_email = 'khmbasad@gmail.com',
-    url = 'https://github.com/kmbasad/eidos',
+    url = 'https://github.com/ratt-ru/eidos',
     packages = [PACKAGE_NAME],
     install_requires = requirements,
     include_package_data = True,

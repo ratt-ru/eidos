@@ -2,7 +2,7 @@ Metadata-Version: 1.1
 Name: eidos
 Version: 0.1.0
 Summary: Modelling primary beams of radio telescope antennae
-Home-page: https://github.com/kmbasad/eidos
+Home-page: https://github.com/ratt-ru/eidos
 Author: Khan M. B Asad
 Author-email: khmbasad@gmail.com
 License: ['GNU GPL v3']
