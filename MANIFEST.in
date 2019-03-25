@@ -1,0 +1,2 @@
+include meerkat_beam_coeffs_ah_zp_dct.npy
+include meerkat_beam_coeffs_em_zp_dct.npy
