@@ -1,7 +1,7 @@
 # Eidos
 Primary beam modelling of radio telescope antennae.
 
-For now, only supports **MeerKAT L-band out to 10° radius**. These beams can be calculated from both Holographic (AH) observation and EM simulation. The beam datasets are calculated from a specific AH and EM dataset and should not be considered standard for MeerKAT.
+For now, only supports **MeerKAT L-band out to 10° diameter**. These beams can be calculated from both Holographic (AH) observation and EM simulation. The beam datasets are calculated from a specific AH and EM dataset and should not be considered standard for MeerKAT.
 
 ## Dependencies
 scipy, numpy, astropy
