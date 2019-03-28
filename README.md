@@ -27,6 +27,7 @@ To create a primary beam Jones matrix of MeerKAT for any frequency of L-band run
 `eidos -p 256 -d 10 -f 1070` 
 
 where 256 is the number of pixels on each side, 10 is the diameter of the beam in degrees, and 1400 MHz is the frequency. 
+
 You can add `-c me` option to get the EM beam models. By default, it will produce models from holography: `-c mh` 
 
 If you want Stokes I beam instead of the Jones matrix, run 
