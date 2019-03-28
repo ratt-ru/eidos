@@ -17,12 +17,12 @@ To create a local developer version:
 
 Help available via `eidos -h`
 
-## Reconstructing beam
+## Creating beam models
 To create a primary beam Jones matrix of MeerKAT for any frequency of L-band run  
 `eidos -p 256 -d 10 -f 1070`  
 where `256` is the number of pixels on each side, `10` is the diameter of the beam in degrees, and `1070` MHz is the frequency. 
 
-One can add `-c me` option to get the EM models. The default is `-c mh` for AH.
+One can add `-c me` (`m` for MeerKAT, `e` for EM) option to get the EM models. The default is `-c mh` for AH.
 
 To create Stokes I beam instead of the Jones matrix:  
 `eidos -p 256 -d 10 -f 1070 -S I`
