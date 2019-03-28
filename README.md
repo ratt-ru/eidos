@@ -25,13 +25,13 @@ where `256` is the number of pixels on each side, `10` is the diameter of the be
 One can add `-c me` option to get the EM models. The default is `-c mh` for AH.
 
 To create Stokes I beam instead of the Jones matrix:  
-`eidos -p 256 -d 10 -f 1070 -S I`.
+`eidos -p 256 -d 10 -f 1070 -S I`
 
 One can use `I,Q,U,V` and any of their permutations as inputs fot the `-S` option.  
 `-S IQ` will produce the leakage map from Q to I and so on for all the other permutations.  
 
 To create full Mueller matrix, which will be real for a single dish because it is the auto-correlation of a complex Jones matrix:  
-`eidos -p 256 -d 10 -f 1070 -S M`.
+`eidos -p 256 -d 10 -f 1070 -S M`
 
 To create beam cube for a list of frequencies:  
 `eidos -p 256 -d 10 -f 1300 1400 5`  
