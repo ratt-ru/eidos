@@ -37,9 +37,9 @@ def jones_to_mueller(a,b=None):
     return M
 
 def jones_to_mueller_all(d):
-    M = np.zeros((4,4,d.shape[2],d.shape[3],d.shape[4]), dtype=np.complex)
-    for f in range(d.shape[2]):
-        M[:,:,f,:,:] = jones_to_mueller(d[:,:,f,:,:])
+    M = np.zeros((d.shape[0],4,4,d.shape[3],d.shape[4]), dtype=np.complex)
+    for f in range(d.shape[0]):
+        M[f,:,:,:,:] = jones_to_mueller(d[f,:,:,:,:])
     return M
 
 def write_fits(beam, freqs, diameter, filename):
