@@ -97,12 +97,12 @@ def main(argv):
           ['VI', 'VQ', 'VU', 'V']]
     if args.Stokes:
         m = args.Stokes
-        data_M = jones_to_mueller_all(data)
+        data_M = jones_to_mueller_all(B)
         if m=='M': data = data_M
         else:
             ind = np.where(np.array(st)==m)
-            data = np.zeros((1,1,)+data.shape[2:], dtype=np.complex)
-            data[0,0,:,:,:] = data_M[ind]
+            data = np.zeros((B.shape[0],1,1,)+B.shape[3:], dtype=np.complex)
+            data[:,0,0,:,:] = data_M[:,ind[0],ind[1],...]
         filename = filename+'_'+m
 
     # Save as fits files
