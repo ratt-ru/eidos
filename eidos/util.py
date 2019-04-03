@@ -28,7 +28,7 @@ def jones_to_mueller(a,b=None):
     If f1=f2, compute the autocorrelation version for single dishes
     """
     if b==None: b = a
-    M = np.zeros((4,4,a.shape[2],a.shape[3]), dtype=np.complex)
+    M = np.zeros((4,4,a.shape[2], a.shape[3]), dtype=np.complex)
     S = 0.5*np.matrix('1 1 0 0; 0 0 1 1j; 0 0 1 -1j; 1 -1 0 0')
     for i in range(a.shape[2]):
         for j in range(a.shape[3]):
