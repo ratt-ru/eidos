@@ -102,7 +102,6 @@ def main(argv):
         else:
             ind = np.where(np.array(st)==m)
             data = np.zeros((B.shape[0],1,1,B.shape[3],B.shape[4]), dtype=np.complex)
-            print(data_M.shape,data.shape,ind[0][0],ind[1][0])
             data[:,0,0,:,:] = data_M[:,ind[0][0],ind[1][0],...]
         filename = filename+'_'+m
         save_fits(data, nu, args, filename)
