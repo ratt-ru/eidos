@@ -105,5 +105,5 @@ def main(argv):
             print(data_M.shape,data.shape,ind[0][0],ind[1][0])
             data[:,0,0,:,:] = data_M[:,ind[0][0],ind[1][0],...]
         filename = filename+'_'+m
-        save_fits(data_M, nu, args, filename)
+        save_fits(data, nu, args, filename)
     else: save_fits(B, nu, args, filename)    
