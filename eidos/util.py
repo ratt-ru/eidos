@@ -58,8 +58,8 @@ def write_fits(beam, freqs, diameter, filename):
     cdelts = [diam/beam.shape[-2], diam/beam.shape[-1], df, 1, 1]
     cunits = ['deg', 'deg', 'Hz', '', '']
     nx, ny = beam.shape[-2], beam.shape[-1]
-    if nx%2 == 0: crpixx, crpixy = nx/2+0.5, ny/2+0.5
-    elif nx%2 == 1: crpixx, crpixy = nx/2+1, ny/2+1
+    if nx%2 == 0: crpixx, crpixy = nx/2, ny/2
+    elif nx%2 == 1: crpixx, crpixy = int(nx/2), int(ny/2)
     crpixs = [crpixx, crpixy, 1, 1, 1]
     for i in range(len(beam.shape)):
         ii = str(i+1)

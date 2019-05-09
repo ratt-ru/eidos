@@ -36,8 +36,9 @@ def save_fits(data, nu, args, filename):
 
 def main(argv):
     parser=argparse.ArgumentParser(description='Create primary beam model of MeerKAT')
-    parser.add_argument('-p', '--pixels', help='Number of pixels on one side', type=int, required=True)
-    parser.add_argument('-d', '--diameter', help='Diameter of the required beam', default=6., type=float, required=False)
+    parser.add_argument('-p', '--pixels', help='Number of pixels on one side', type=int, required=False)
+    parser.add_argument('-d', '--diameter', help='Diameter of the required beam', type=float, required=False)
+    parser.add_argument('-r', '--scale', help='Pixel scale in degrees', type=float, required=False)
     parser.add_argument('-f', '--freq', help='A single freq, or the start, end freqs, and channel width in MHz', nargs='+', type=float, required=True)
     parser.add_argument('-c', '--coeff', help='Which coefficients to use: mh for MeerKAT holography, me for MeerKAT EM simulation and vh for VLA holography?', type=str, default='mh')
     parser.add_argument('-P', '--prefix', help='Prefix of output beam beam file(s)', type=str, required=False)
@@ -63,6 +64,18 @@ def main(argv):
     elif args.coeff=='me': filename=os.path.join(package_directory, "data", "meerkat_beam_coeffs_em_zp_dct.npy")
     elif args.coeff=='vh': raise Exception("JVLA option is coming soon")
 
+    # pixel diameter and scale
+    if not args.pixels:
+        try: args.pixels = int(args.diameter/args.scale)
+        except:
+            print("Specify both diameter and pixel scale")
+            raise
+    if not args.diameter:
+        try: args.diameter = int(args.pixels*args.scale)
+        except:
+            print("Specify both number of pixels and pixel scale")
+            raise
+
     # Create parameter list for Zernike reconstruction
 
     params, freqs = zernike_parameters(filename, args.pixels, args.diameter, args.thresh)
@@ -81,7 +94,9 @@ def main(argv):
     if len(B.shape)==4: B = np.expand_dims(B, axis=0)
     if args.diameter!=10:
         c, r = int(B.shape[-1]/2), int(args.pixels/2)
-        B = B[...,c-r:c+r,c-r:c+r]
+        if args.pixels%2==0: B = B[...,c-r:c+r,c-r:c+r]
+        else: B = B[...,c-r:c+r+1,c-r:c+r+1]
+
 
     if args.prefix:
         filename = args.prefix
@@ -89,7 +104,7 @@ def main(argv):
         try: chan = "%ichannels"%len(nu)
         except: chan = "%iMHz"%(int(nu))
         filename = 'primary_beam_%s_%s_%ideg'%(args.coeff, chan, args.diameter)
-    
+
     # Convert to Stokes/Mueller formalism
     st = [['I', 'IQ', 'IU', 'IV'],
           ['QI', 'Q', 'QU', 'QV'],
