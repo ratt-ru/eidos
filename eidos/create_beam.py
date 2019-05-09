@@ -12,7 +12,7 @@ from parallelize import *
 import argparse
 
 def zernike_parameters(filename, npix=256, diameter=10, thr=20):
-    C = np.load(filename, encoding='latin1').item()
+    C = np.load(filename, encoding='latin1', allow_pickle=True).item()
     Cr = dct_recon_all(C)
     diameter_orig = 10. # original coeffs were calculated from 10 deg beams
     Npix = int(diameter_orig/(diameter/npix))
