@@ -1,7 +1,7 @@
 # Eidos
 Primary beam modelling of radio astronomy antennas:  
 Paper I: [Modelling the Karl G. Jansky Very Large Array (VLA) L-band beam using holography](https://academic.oup.com/mnras/article/485/3/4107/5374534)  
-Paper II: Modelling the MeerKAT L-band beam (coming soon)  
+Paper II: [Modelling the MeerKAT L-band beam](https://arxiv.org/abs/1904.07155)  
 
 The current version can be used to create only MeerKAT L-band beams from both holographic (AH) observations and EM simulations within a maximum diameter of 10 degrees. L-band AH beam models for JVLA and the UHF-band models for MeerKAT will be added soon.  
 
