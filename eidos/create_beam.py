@@ -71,7 +71,7 @@ def main(argv):
             print("Specify both diameter and pixel scale")
             raise
     if not args.diameter:
-        try: args.diameter = int(args.pixels*args.scale)
+        try: args.diameter = args.pixels*args.scale
         except:
             print("Specify both number of pixels and pixel scale")
             raise
