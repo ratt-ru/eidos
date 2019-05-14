@@ -28,7 +28,7 @@ def jones_to_mueller(a,b=None):
     If f1=f2, compute the autocorrelation version for single dishes
     """
     if b==None: b = a
-    M = np.zeros((4,4,a.shape[2],a.shape[3]), dtype=np.complex)
+    M = np.zeros((4,4,a.shape[2], a.shape[3]), dtype=np.complex)
     S = 0.5*np.matrix('1 1 0 0; 0 0 1 1j; 0 0 1 -1j; 1 -1 0 0')
     for i in range(a.shape[2]):
         for j in range(a.shape[3]):
@@ -37,9 +37,9 @@ def jones_to_mueller(a,b=None):
     return M
 
 def jones_to_mueller_all(d):
-    M = np.zeros((4,4,d.shape[2],d.shape[3],d.shape[4]), dtype=np.complex)
-    for f in range(d.shape[2]):
-        M[:,:,f,:,:] = jones_to_mueller(d[:,:,f,:,:])
+    M = np.zeros((d.shape[0],4,4,d.shape[3],d.shape[4]), dtype=np.complex)
+    for f in range(d.shape[0]):
+        M[f,:,:,:,:] = jones_to_mueller(d[f,:,:,:,:])
     return M
 
 def write_fits(beam, freqs, diameter, filename):
@@ -58,8 +58,8 @@ def write_fits(beam, freqs, diameter, filename):
     cdelts = [diam/beam.shape[-2], diam/beam.shape[-1], df, 1, 1]
     cunits = ['deg', 'deg', 'Hz', '', '']
     nx, ny = beam.shape[-2], beam.shape[-1]
-    if nx%2 == 0: crpixx, crpixy = nx/2+0.5, ny/2+0.5
-    elif nx%2 == 1: crpixx, crpixy = nx/2+1, ny/2+1
+    if nx%2 == 0: crpixx, crpixy = nx/2, ny/2
+    elif nx%2 == 1: crpixx, crpixy = int(nx/2), int(ny/2)
     crpixs = [crpixx, crpixy, 1, 1, 1]
     for i in range(len(beam.shape)):
         ii = str(i+1)
