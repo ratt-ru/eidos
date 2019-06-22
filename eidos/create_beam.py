@@ -41,6 +41,7 @@ def main(argv):
     parser.add_argument('-r', '--scale', help='Pixel scale in degrees', type=float, required=False)
     parser.add_argument('-f', '--freq', help='A single freq, or the start, end freqs, and channel width in MHz', nargs='+', type=float, required=True)
     parser.add_argument('-c', '--coeff', help='Which coefficients to use: mh for MeerKAT holography, me for MeerKAT EM simulation and vh for VLA holography?', type=str, default='mh')
+    parser.add_argument('-cf', '--coefficients-file', help='Coefficients file')
     parser.add_argument('-P', '--prefix', help='Prefix of output beam beam file(s)', type=str, required=False)
     parser.add_argument('-o8', '--output-eight', help='Output complex volatge beams (8 files)', action='store_true')
     parser.add_argument('-T', '--thresh', help='How many Zernike coefficients to use. Must be <=20.', type=int, default=20, required=False)
@@ -59,10 +60,15 @@ def main(argv):
     else: print("Do `eidos -h` to see how to input the frequency parameters")
 
     # Zernike coefficient filename
-
-    if args.coeff=='mh': filename=os.path.join(package_directory, "data", "meerkat_beam_coeffs_ah_zp_dct.npy")
-    elif args.coeff=='me': filename=os.path.join(package_directory, "data", "meerkat_beam_coeffs_em_zp_dct.npy")
-    elif args.coeff=='vh': raise Exception("JVLA option is coming soon")
+    if args.coefficients_file:
+        filename = args.coefficients_file
+    else:
+        if args.coeff=='mh': 
+            filename=os.path.join(package_directory, "data", "meerkat_beam_coeffs_ah_zp_dct.npy")
+        elif args.coeff=='me': 
+            filename=os.path.join(package_directory, "data", "meerkat_beam_coeffs_em_zp_dct.npy")
+        elif args.coeff=='vh': 
+            raise Exception("JVLA option is coming soon")
 
     # pixel diameter and scale
     if not args.pixels:

@@ -16,7 +16,7 @@ requirements = [
 
 
 PACKAGE_NAME = 'eidos'
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
 setup(name = PACKAGE_NAME,
     version = __version__,
@@ -27,7 +27,12 @@ setup(name = PACKAGE_NAME,
     packages = [PACKAGE_NAME],
     install_requires = requirements,
     include_package_data = True,
-    package_data = { "eidos/data" : ["meerkat_beam_coeffs_ah_zp_dct.npy", "meerkat_beam_coeffs_em_zp_dct.npy", "meerkat_beam_coeffs_em_zp_dct.npy"] },
+    package_data = { 
+        "eidos/data" : [
+        "meerkat_beam_coeffs_ah_zp_dct.npy", 
+        "meerkat_beam_coeffs_em_zp_dct.npy"
+        ] 
+    },
     scripts = ['bin/' + j for j in os.listdir('bin')],
     license = ['GNU GPL v3'],
     classifiers = [
