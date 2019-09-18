@@ -9,39 +9,9 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 
 # Import Eidos functions
-# from util import *
-# from spectral import *
 from spectral import dct_recon, dct_recon_all
-# from spatial import *
 from spatial import recon_par, write_fits
 from create_beam import zernike_parameters
-# from parallelize import *
-
-# def dct_recon_all(Co):
-#     F,C,I = Co['nu'], Co['dctc'], Co['dcti']
-#     print(F.shape, C.shape, I.shape)
-#     import sys
-#     sys.exit(0)
-#     recons = np.zeros((2,len(F),2,2,C.shape[-1]))
-#     for i in range(2):
-#         for j in range(2):
-#             for k in range(C.shape[-1]):
-#                 for p in range(2):
-#                     recons[p,:,i,j,k] = dct_recon(C[p,:,i,j,k], list(map(int,I[p,:,i,j,k])), len(F))
-#     return recons
-
-# def zernike_parameters(filename, npix=256, diameter=10, thr=20):
-#     Co = np.load(filename, encoding='latin1', allow_pickle=True).item()
-#     F,C,I = Co['nu'], Co['dctc'], Co['dcti']
-#     # print(F.shape, C.shape, I.shape)
-#     # import sys
-#     # sys.exit(0)
-#     Cr = dct_recon_all(Co)
-#     print(Cr.shape[1])
-#     diameter_orig = 10. # original coeffs were calculated from 10 deg beams
-#     Npix = int(diameter_orig/(diameter/npix))
-#     params = [[Cr[:,i,:,:,:], C['zi'], Npix, thr] for i in range(Cr.shape[1])]
-#     return np.array(params), C['nu']
 
 def save_fits(data, nu, filename):
     write_fits(data.real, nu, 10, filename+'_re.fits')
@@ -101,10 +71,6 @@ pointing_errors = np.zeros((ntime, na, nchan, 2), dtype=np.float64)
 coords[:2, :, 0, 0, 0], coords[2, :, 0, 0, 0] = lm[:, :], 0
 
 # Get Zernike coefficients and noll indices (taken from create_beam.py in Eidos)
-# import sys, os
-# package_directory = os.path.dirname(__file__)
-# sys.path.append(package_directory)
-# filename=os.path.join(package_directory, "data", "meerkat_beam_coeffs_ah_zp_dct.npy")
 filename = "data/meerkat_beam_coeffs_ah_zp_dct.npy"
 params, freqs = zernike_parameters(filename)
 
@@ -152,7 +118,7 @@ for i in range(2):
         zernike_file_coeffs[b'coeffs'][b'imag'][corr_index] = coeffs_i[0,0, i, j, :]
         zernike_file_coeffs[b'noll_index'][b'real'][corr_index] = noll_index_r[0,0, i, j, :]
         zernike_file_coeffs[b'noll_index'][b'imag'][corr_index] = noll_index_i[0,0, i, j, :]
-np.save("zernike_real_imag_coeffs.npy", zernike_file_coeffs)
+# np.save("zernike_real_imag_coeffs.npy", zernike_file_coeffs)
 
 # Calls to zernike_dde
 zernike_real = zernike_dde(coords, coeffs_r, noll_index_r, parallactic_angles, frequency_scaling,  antenna_scaling, pointing_errors)
