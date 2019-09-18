@@ -22,6 +22,7 @@ def zernike_parameters(filename, npix=256, diameter=10, thr=20):
 def save_fits(data, nu, args, filename):
     # Save as fits files
     if args.output_eight and args.Stokes==None:
+        print(data.shape)
         write_fits_eight(data, nu, args.diameter, filename)
         print("Saved as 8 files with prefix %s"%filename)
     elif args.output_eight and args.Stokes!=None:
@@ -34,21 +35,38 @@ def save_fits(data, nu, args, filename):
             write_fits(data.imag, nu, args.diameter, filename+'_im.fits')
             print("Saved Imaginary part as %s_im.fits"%filename)
 
-def main(argv):
+def create_parser():
     parser=argparse.ArgumentParser(description='Create primary beam model of MeerKAT')
-    parser.add_argument('-p', '--pixels', help='Number of pixels on one side', type=int, required=False)
-    parser.add_argument('-d', '--diameter', help='Diameter of the required beam', type=float, required=False)
-    parser.add_argument('-r', '--scale', help='Pixel scale in degrees', type=float, required=False)
-    parser.add_argument('-f', '--freq', help='A single freq, or the start, end freqs, and channel width in MHz', nargs='+', type=float, required=True)
-    parser.add_argument('-c', '--coeff', help='Which coefficients to use: mh for MeerKAT holography, me for MeerKAT EM simulation and vh for VLA holography?', type=str, default='mh')
+    parser.add_argument('-p', '--pixels', type=int, required=False,
+                        help='Number of pixels on one side')
+    parser.add_argument('-d', '--diameter', type=float, required=False,
+                        help='Diameter of the required beam')
+    parser.add_argument('-r', '--scale', type=float, required=False,
+                        help='Pixel scale in degrees')
+    parser.add_argument('-f', '--freq', nargs='+', type=float, required=True,
+                        help='A single freq, or the start, end freqs, '
+                        'and channel width in MHz')
+    parser.add_argument('-c', '--coeff', type=str, default='mh',
+                        help='Which coefficients to use: mh for MeerKAT holography, '
+                        'me for MeerKAT EM simulation and vh for VLA holography?')
     parser.add_argument('-cf', '--coefficients-file', help='Coefficients file')
-    parser.add_argument('-P', '--prefix', help='Prefix of output beam beam file(s)', type=str, required=False)
-    parser.add_argument('-o8', '--output-eight', help='Output complex volatge beams (8 files)', action='store_true')
-    parser.add_argument('-T', '--thresh', help='How many Zernike coefficients to use. Must be <=20.', type=int, default=20, required=False)
-    parser.add_argument('-S', '--Stokes', help="If provided output will be in Stokes, i. e. Mueller, formalism, instead of the default Jones formalism. Specify 'I', 'Q', 'U', 'V' for the Stokes beams, or 'M' to get the full Mueller matrix. If you give 'IQ' instead, the leakage from Q to I will be provided, and so on for any other combination of Stokes parameters.", type=str, required=False)
+    parser.add_argument('-P', '--prefix', type=str, required=False,
+                        help='Prefix of output beam beam file(s)')
+    parser.add_argument('-o8', '--output-eight', action='store_true',
+                        help='Output complex volatge beams (8 files)')
+    parser.add_argument('-T', '--thresh', type=int, default=20, required=False,
+                        help='How many Zernike coefficients to use. Must be <=20.')
+    parser.add_argument('-S', '--Stokes', type=str, required=False,
+                        help="If provided output will be in Stokes, i. e. Mueller, "
+                        "formalism, instead of the default Jones formalism. Specify "
+                        "'I', 'Q', 'U', 'V' for the Stokes beams, or 'M' to get the "
+                        "full Mueller matrix. If you give 'IQ' instead, the leakage "
+                        "from Q to I will be provided, and so on for any other "
+                        "combination of Stokes parameters.")
+    return parser
 
-    args = parser.parse_args(argv)
 
+def main(args):
     # create the list of frequencies
 
     if len(args.freq)==1:
@@ -72,12 +90,14 @@ def main(argv):
 
     # pixel diameter and scale
     if not args.pixels:
-        try: args.pixels = int(args.diameter/args.scale)
+        try: 
+            args.pixels = int(args.diameter/args.scale)
         except:
             print("Specify both diameter and pixel scale")
             raise
     if not args.diameter:
-        try: args.diameter = args.pixels*args.scale
+        try: 
+            args.diameter = args.pixels*args.scale
         except:
             print("Specify both number of pixels and pixel scale")
             raise
@@ -97,25 +117,30 @@ def main(argv):
 
     # Cut the beam to the specified diameter
 
-    if len(B.shape)==4: B = np.expand_dims(B, axis=0)
+    if len(B.shape)==4: B = np.expand_dims(B, axis=2)
+    
     if args.diameter!=10:
         c, r = int(B.shape[-1]/2), int(args.pixels/2)
-        if args.pixels%2==0: B = B[...,c-r:c+r,c-r:c+r]
-        else: B = B[...,c-r:c+r+1,c-r:c+r+1]
+        if args.pixels%2==0:
+            B = B[...,c-r:c+r,c-r:c+r]
+        else:
+            B = B[...,c-r:c+r+1,c-r:c+r+1]
 
 
     if args.prefix:
         filename = args.prefix
     else:
-        try: chan = "%ichannels"%len(nu)
-        except: chan = "%iMHz"%(int(nu))
+        try: 
+            chan = "%ichannels"%len(nu)
+        except: 
+            chan = "%iMHz"%(int(nu))
         filename = 'primary_beam_%s_%s_%ideg'%(args.coeff, chan, args.diameter)
 
     # Convert to Stokes/Mueller formalism
     st = [['I', 'IQ', 'IU', 'IV'],
-          ['QI', 'Q', 'QU', 'QV'],
-          ['UI', 'UQ', 'U', 'UV'],
-          ['VI', 'VQ', 'VU', 'V']]
+            ['QI', 'Q', 'QU', 'QV'],
+            ['UI', 'UQ', 'U', 'UV'],
+            ['VI', 'VQ', 'VU', 'V']]
     if args.Stokes:
         m = args.Stokes
         data_M = jones_to_mueller_all(B)
@@ -126,4 +151,9 @@ def main(argv):
             data[:,0,0,:,:] = data_M[:,ind[0][0],ind[1][0],...]
         filename = filename+'_'+m
         save_fits(data, nu, args, filename)
-    else: save_fits(B, nu, args, filename)    
+    else: 
+        save_fits(B, nu, args, filename)
+
+if __name__ == "__main__":
+    args = create_parser().parse_args()
+    main(args)

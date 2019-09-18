@@ -108,7 +108,8 @@ def write_fits_cube(beam, freqs, diameter, filename):
 
 def write_fits_eight(data, freqs, diameter, prefix):
     C = ['x', 'y']
-    if len(data.shape)==4: data = np.expand_dims(data, axis=2)
+    if len(data.shape)==4: 
+        data = np.expand_dims(data, axis=2)
     for i in range(2):
         for j in range(2):
             filename = prefix+'_%s%s'%(C[i],C[j])

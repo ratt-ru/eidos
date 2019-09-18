@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from util import *
-from scipy.misc import factorial as fac
+from math import factorial as fac
 
 class Zernike(object):
     """
@@ -98,8 +98,10 @@ class Zernike(object):
     
     def unit_disk(self, npix=None):
         """Create an unit disk and convert to rho, phi"""
-        if npix: nx, ny = npix, npix
-        else: nx, ny = self.img.shape
+        if npix:
+            nx, ny = npix, npix
+        else:
+            nx, ny = self.img.shape
         grid = (np.indices((nx, ny), dtype=np.float) - nx/2) / (nx*1./2) # create unit grid [-1,1]
         self.grid_rho = (grid**2.0).sum(0)**0.5 # rho = sqrt(x^2+y^2)
         self.grid_phi = np.arctan2(grid[0], grid[1]) # phi = itan(x/y)
