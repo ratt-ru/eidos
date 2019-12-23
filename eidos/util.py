@@ -53,14 +53,14 @@ def write_fits(beam, freqs, diameter, filename):
     if beam.shape[0]==2: xy = ['H', 'V']
     elif beam.shape[0]==4: xy = ['Mx', 'My']
     else: xy = ['', '']
-    ctypes = ['px', 'py', 'FREQ', xy[0], xy[1]]
-    crvals = [0.0, 0.0, fMHz[0], 0, 0, 0]
-    cdelts = [diam/beam.shape[-2], diam/beam.shape[-1], df, 1, 1]
-    cunits = ['deg', 'deg', 'Hz', '', '']
+    ctypes = ['FREQ', xy[0], xy[1], 'px', 'py'][::-1]
+    crvals = [fMHz[0], 0, 0, 0.0, 0.0][::-1]
+    cdelts = [df, 1, 1, diam/beam.shape[-2], diam/beam.shape[-1]][::-1]
+    cunits = ['Hz', '', '', 'deg', 'deg'][::-1]
     nx, ny = beam.shape[-2], beam.shape[-1]
     if nx%2 == 0: crpixx, crpixy = nx/2, ny/2
     elif nx%2 == 1: crpixx, crpixy = int(nx/2), int(ny/2)
-    crpixs = [crpixx, crpixy, 1, 1, 1]
+    crpixs = [1, 1, 1, crpixy, crpixx][::-1]
     for i in range(len(beam.shape)):
         ii = str(i+1)
         hdr['CTYPE'+ii] = ctypes[i]
@@ -112,8 +112,8 @@ def write_fits_eight(data, freqs, diameter, prefix):
     for i in range(2):
         for j in range(2):
             filename = prefix+'_%s%s'%(C[i],C[j])
-            write_fits_cube(data[i,j,:,:,:].real, freqs, diameter, filename+'_re.fits')
-            write_fits_cube(data[i,j,:,:,:].imag, freqs, diameter, filename+'_im.fits')
+            write_fits_cube(data[:,i,j,:,:].real, freqs, diameter, filename+'_re.fits')
+            write_fits_cube(data[:,i,j,:,:].imag, freqs, diameter, filename+'_im.fits')
 
 
 def write_fits_single(beam, freqs, diameter, filename):

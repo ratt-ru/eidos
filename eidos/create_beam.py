@@ -102,7 +102,7 @@ def main(argv):
         c, r = int(B.shape[-1]/2), int(args.pixels/2)
         if args.pixels%2==0: B = B[...,c-r:c+r,c-r:c+r]
         else: B = B[...,c-r:c+r+1,c-r:c+r+1]
-
+    print("Cube shape", B.shape)
 
     if args.prefix:
         filename = args.prefix
