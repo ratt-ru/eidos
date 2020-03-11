@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from util import *
-from scipy.misc import factorial as fac
+import math
+
+fac = math.factorial
 
 class Zernike(object):
     """
