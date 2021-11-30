@@ -34,7 +34,7 @@ setup(name = PACKAGE_NAME,
         ] 
     },
     scripts = ['bin/' + j for j in os.listdir('bin')],
-    license = ['GNU GPL v3'],
+    license = 'GNU GPL v3',
     classifiers = [
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Science/Research",
