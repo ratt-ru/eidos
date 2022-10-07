@@ -9,6 +9,8 @@ from util import *
 from spectral import *
 from spatial import *
 from parallelize import *
+
+import numpy as np
 import argparse
 
 def zernike_parameters(filename, npix=256, diameter=10, thr=20):

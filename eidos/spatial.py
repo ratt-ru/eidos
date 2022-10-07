@@ -1,5 +1,8 @@
 #!/usr/bin/env python
+
 from util import *
+
+import numpy as np
 import math
 
 fac = math.factorial
