@@ -16,7 +16,7 @@ requirements = [
 
 
 PACKAGE_NAME = 'eidos'
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 
 setup(name = PACKAGE_NAME,
     version = __version__,

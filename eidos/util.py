@@ -17,7 +17,7 @@ def normalise(d):
     return d
 
 def normalise_multifreq(d):
-    data = np.zeros(d.shape, dtype=np.complex)
+    data = np.zeros(d.shape, dtype=complex)
     for i in range(d.shape[2]):
         data[:,:,i,:,:] = normalise(d[:,:,i,:,:])
     return data
@@ -28,7 +28,7 @@ def jones_to_mueller(a,b=None):
     If f1=f2, compute the autocorrelation version for single dishes
     """
     if b==None: b = a
-    M = np.zeros((4,4,a.shape[2], a.shape[3]), dtype=np.complex)
+    M = np.zeros((4,4,a.shape[2], a.shape[3]), dtype=complex)
     S = 0.5*np.matrix('1 1 0 0; 0 0 1 1j; 0 0 1 -1j; 1 -1 0 0')
     for i in range(a.shape[2]):
         for j in range(a.shape[3]):
@@ -37,7 +37,7 @@ def jones_to_mueller(a,b=None):
     return M
 
 def jones_to_mueller_all(d):
-    M = np.zeros((d.shape[0],4,4,d.shape[3],d.shape[4]), dtype=np.complex)
+    M = np.zeros((d.shape[0],4,4,d.shape[3],d.shape[4]), dtype=complex)
     for f in range(d.shape[0]):
         M[f,:,:,:,:] = jones_to_mueller(d[f,:,:,:,:])
     return M

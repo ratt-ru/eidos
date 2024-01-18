@@ -22,9 +22,9 @@ class Zernike(object):
         if 'jones' in mode: self.jones_images(data)
 
     def jones_images(self, data):
-        self.coeffs_J = self.coeffs_trunc_J = np.zeros((data.shape[0], data.shape[1], self.Nmodes), dtype=np.complex)
-        self.recon_full_J = self.recon_trunc_J = np.zeros(data.shape, dtype=np.complex)
-        if 'recon' in self.mode: self.recon = np.zeros((2,2,self.npix,self.npix), dtype=np.complex)
+        self.coeffs_J = self.coeffs_trunc_J = np.zeros((data.shape[0], data.shape[1], self.Nmodes), dtype=complex)
+        self.recon_full_J = self.recon_trunc_J = np.zeros(data.shape, dtype=complex)
+        if 'recon' in self.mode: self.recon = np.zeros((2,2,self.npix,self.npix), dtype=complex)
         for i in range(data.shape[0]):
             for j in range(data.shape[1]):
                 #print "Fitting Zernike polynomials to Jones %i %i"%(i,j)
@@ -102,7 +102,7 @@ class Zernike(object):
         """Create an unit disk and convert to rho, phi"""
         if npix: nx, ny = npix, npix
         else: nx, ny = self.img.shape
-        grid = (np.indices((nx, ny), dtype=np.float) - nx/2) / (nx*1./2) # create unit grid [-1,1]
+        grid = (np.indices((nx, ny), dtype=float) - nx/2) / (nx*1./2) # create unit grid [-1,1]
         self.grid_rho = (grid**2.0).sum(0)**0.5 # rho = sqrt(x^2+y^2)
         self.grid_phi = np.arctan2(grid[0], grid[1]) # phi = itan(x/y)
         self.grid_mask = self.grid_rho <= 1 # boolean array specifying where rho<=1
@@ -130,7 +130,7 @@ class Zernike(object):
         """Truncate the coefficients upto the given threshold"""
         sortedindex = np.argsort(np.abs(self.coeffs))[::-1]
         Ncoeff = self.coeffs.shape[-1]
-        cutoff = np.int(np.round(Ncoeff*thresh/100.))
+        cutoff = int(np.round(Ncoeff*thresh/100.))
         
         #print "Keeping %2.0f %% (N=%s) of the biggest coefficients"%(thresh,cutoff)
 
