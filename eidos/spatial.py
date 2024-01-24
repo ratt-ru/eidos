@@ -2,7 +2,7 @@
 from util import *
 import math
 
-fac = math.factorial
+fac = lambda x: math.factorial(int(x))
 
 class Zernike(object):
     """
