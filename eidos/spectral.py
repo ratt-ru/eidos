@@ -14,7 +14,7 @@ def best_coeffs(d, thr):
                 idx = np.argsort(avg)[::-1][:thr]
                 modes[k,i,j,:] = idx
                 coeffs[k,:,i,j,:] = kk[:,i,j,idx]
-                
+
     return coeffs, modes
 
 def good_channels_sig(d, nu, c=[0,0], edge=1628):

@@ -6,6 +6,7 @@ from numpy import pi, exp, sin, cos
 from astropy.io import fits
 import time
 
+
 def normalise(d):
     xmid=int(round(d.shape[2]/2.))-1
     ymid=int(round(d.shape[3]/2.))-1
@@ -16,11 +17,13 @@ def normalise(d):
             d[:,:,i,j] = np.dot(m, d[:,:,i,j])
     return d
 
+
 def normalise_multifreq(d):
     data = np.zeros(d.shape, dtype=complex)
     for i in range(d.shape[2]):
         data[:,:,i,:,:] = normalise(d[:,:,i,:,:])
     return data
+
 
 def jones_to_mueller(a,b=None):
     """
@@ -28,7 +31,7 @@ def jones_to_mueller(a,b=None):
     If f1=f2, compute the autocorrelation version for single dishes
     """
     if b==None: b = a
-    M = np.zeros((4,4,a.shape[2], a.shape[3]), dtype=complex)
+    M = np.zeros((4,4,a.shape[2], a.shape[3]), dtype=np.complex64)
     S = 0.5*np.matrix('1 1 0 0; 0 0 1 1j; 0 0 1 -1j; 1 -1 0 0')
     for i in range(a.shape[2]):
         for j in range(a.shape[3]):
@@ -36,11 +39,13 @@ def jones_to_mueller(a,b=None):
             M[:,:,i,j] = np.dot( np.dot(np.linalg.inv(S), ab), S )
     return M
 
+
 def jones_to_mueller_all(d):
-    M = np.zeros((d.shape[0],4,4,d.shape[3],d.shape[4]), dtype=complex)
+    M = np.zeros((d.shape[0],4,4,d.shape[3],d.shape[4]), dtype=np.complex64)
     for f in range(d.shape[0]):
         M[f,:,:,:,:] = jones_to_mueller(d[f,:,:,:,:])
     return M
+
 
 def write_fits(beam, freqs, diameter, filename):
     # Create header
@@ -70,13 +75,13 @@ def write_fits(beam, freqs, diameter, filename):
         hdr['CUNIT'+ii] = cunits[i]
     hdr['TELESCOP'] = 'MeerKAT'
     hdr['DATE'] = time.ctime()
-    
+
     # Write real and imag parts of data
     hdu = fits.PrimaryHDU(beam, header=hdr)
     hdu.writeto(filename, overwrite=True)
 
+
 def write_fits_cube(beam, freqs, diameter, filename):
-    
     # Create header
     hdr = fits.Header()
     fMHz = np.array(freqs)*1e6
@@ -101,10 +106,11 @@ def write_fits_cube(beam, freqs, diameter, filename):
         hdr['CUNIT'+ii] = cunits[i]
     hdr['TELESCOP'] = 'MeerKAT'
     hdr['DATE'] = time.ctime()
-    
+
     # Write real and imag parts of data
     hdu = fits.PrimaryHDU(beam, header=hdr)
     hdu.writeto(filename, overwrite=True)
+
 
 def write_fits_eight(data, freqs, diameter, prefix):
     C = ['x', 'y']
@@ -120,7 +126,7 @@ def write_fits_single(beam, freqs, diameter, filename):
     data = np.zeros((2,)+beam.shape)
     data[0,...] = beam.real
     data[1,...] = beam.imag
-    
+
     # Create header
     hdr = fits.Header()
     fMHz = np.array(freqs)*1e6
@@ -142,10 +148,11 @@ def write_fits_single(beam, freqs, diameter, filename):
         hdr['CUNIT'+ii] = cunits[i]
     hdr['TELESCOP'] = 'MeerKAT'
     hdr['DATE'] = time.ctime()
-    
+
     # Write real and imag parts of data
     hdu = fits.PrimaryHDU(data, header=hdr)
     hdu.writeto(filename+'.fits', overwrite=True)
+
 
 def freq_to_idx(freqs=np.arange(857)+856, sb=[0,1300]):
     # convert a frequency to an index, default is MeerKAT L-band specifications

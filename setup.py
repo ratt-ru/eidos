@@ -12,6 +12,7 @@ requirements = [
 'scipy',
 'astropy',
 'future',
+'tqdm>=4.42.0'
 ]
 
 

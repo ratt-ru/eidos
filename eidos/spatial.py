@@ -22,9 +22,9 @@ class Zernike(object):
         if 'jones' in mode: self.jones_images(data)
 
     def jones_images(self, data):
-        self.coeffs_J = self.coeffs_trunc_J = np.zeros((data.shape[0], data.shape[1], self.Nmodes), dtype=complex)
-        self.recon_full_J = self.recon_trunc_J = np.zeros(data.shape, dtype=complex)
-        if 'recon' in self.mode: self.recon = np.zeros((2,2,self.npix,self.npix), dtype=complex)
+        self.coeffs_J = self.coeffs_trunc_J = np.zeros((data.shape[0], data.shape[1], self.Nmodes), dtype=np.complex64)
+        self.recon_full_J = self.recon_trunc_J = np.zeros(data.shape, dtype=np.complex64)
+        if 'recon' in self.mode: self.recon = np.zeros((2,2,self.npix,self.npix), dtype=np.complex64)
         for i in range(data.shape[0]):
             for j in range(data.shape[1]):
                 #print "Fitting Zernike polynomials to Jones %i %i"%(i,j)
