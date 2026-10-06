@@ -42,7 +42,17 @@ def jones_to_mueller_all(d):
         M[f,:,:,:,:] = jones_to_mueller(d[f,:,:,:,:])
     return M
 
-def write_fits(beam, freqs, diameter, filename):
+
+def _crpix(n, centre=None):
+    """1-based FITS reference pixel of the beam centre on an n-pixel axis.
+
+    The beam is reconstructed on the grid ``np.indices((n, n)) - n / 2`` (spatial.Zernike.unit_disk),
+    so its centre is at 0-based pixel ``n / 2`` -- 1-based ``n / 2 + 1`` -- for even and odd n alike.
+    ``centre`` overrides that 0-based position, e.g. after the cube has been cropped.
+    """
+    return (n / 2.0 if centre is None else centre) + 1
+
+def write_fits(beam, freqs, diameter, filename, centre=None):
     # Create header
     hdr = fits.Header()
     fMHz = np.array(freqs)*1e6
@@ -58,8 +68,7 @@ def write_fits(beam, freqs, diameter, filename):
     cdelts = [df, 1, 1, diam/beam.shape[-2], diam/beam.shape[-1]][::-1]
     cunits = ['Hz', '', '', 'deg', 'deg'][::-1]
     nx, ny = beam.shape[-2], beam.shape[-1]
-    if nx%2 == 0: crpixx, crpixy = nx/2, ny/2
-    elif nx%2 == 1: crpixx, crpixy = int(nx/2), int(ny/2)
+    crpixx, crpixy = _crpix(nx, centre), _crpix(ny, centre)
     crpixs = [1, 1, 1, crpixy, crpixx][::-1]
     for i in range(len(beam.shape)):
         ii = str(i+1)
@@ -75,7 +84,7 @@ def write_fits(beam, freqs, diameter, filename):
     hdu = fits.PrimaryHDU(beam, header=hdr)
     hdu.writeto(filename, overwrite=True)
 
-def write_fits_cube(beam, freqs, diameter, filename):
+def write_fits_cube(beam, freqs, diameter, filename, centre=None):
     
     # Create header
     hdr = fits.Header()
@@ -89,8 +98,7 @@ def write_fits_cube(beam, freqs, diameter, filename):
     cdelts = [diam/beam.shape[-2], diam/beam.shape[-1], df]
     cunits = ['deg', 'deg', 'Hz']
     nx, ny = beam.shape[-2], beam.shape[-1]
-    if nx%2 == 0: crpixx, crpixy = nx/2+0.5, ny/2+0.5
-    elif nx%2 == 1: crpixx, crpixy = nx/2+1, ny/2+1
+    crpixx, crpixy = _crpix(nx, centre), _crpix(ny, centre)
     crpixs = [crpixx, crpixy, 1, 1, 1, 1]
     for i in range(len(beam.shape)):
         ii = str(i+1)
@@ -106,17 +114,17 @@ def write_fits_cube(beam, freqs, diameter, filename):
     hdu = fits.PrimaryHDU(beam, header=hdr)
     hdu.writeto(filename, overwrite=True)
 
-def write_fits_eight(data, freqs, diameter, prefix):
+def write_fits_eight(data, freqs, diameter, prefix, centre=None):
     C = ['x', 'y']
     if len(data.shape)==4: data = np.expand_dims(data, axis=2)
     for i in range(2):
         for j in range(2):
             filename = prefix+'_%s%s'%(C[i],C[j])
-            write_fits_cube(data[:,i,j,:,:].real, freqs, diameter, filename+'_re.fits')
-            write_fits_cube(data[:,i,j,:,:].imag, freqs, diameter, filename+'_im.fits')
+            write_fits_cube(data[:,i,j,:,:].real, freqs, diameter, filename+'_re.fits', centre=centre)
+            write_fits_cube(data[:,i,j,:,:].imag, freqs, diameter, filename+'_im.fits', centre=centre)
 
 
-def write_fits_single(beam, freqs, diameter, filename):
+def write_fits_single(beam, freqs, diameter, filename, centre=None):
     data = np.zeros((2,)+beam.shape)
     data[0,...] = beam.real
     data[1,...] = beam.imag
@@ -130,8 +138,7 @@ def write_fits_single(beam, freqs, diameter, filename):
     cdelts = [diam/beam.shape[-2], diam/beam.shape[-1], 1, 1, 1]
     cunits = ['deg', 'deg', '', '', '']
     nx, ny = beam.shape[-2], beam.shape[-1]
-    if nx%2 == 0: crpixx, crpixy = nx/2+0.5, ny/2+0.5
-    elif nx%2 == 1: crpixx, crpixy = nx/2+1, ny/2+1
+    crpixx, crpixy = _crpix(nx, centre), _crpix(ny, centre)
     crpixs = [crpixx, crpixy, 1, 1, 1]
     for i in range(len(data.shape)):
         ii = str(i+1)

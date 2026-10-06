@@ -43,3 +43,7 @@ jobs:
     - name: Test
       run: |
         eidos -d 0.5 -r 0.015625 -f 856 956 30 -P mk.holo.lband -o8 
+    - name: Test FITS beam centre (CRPIX matches the reconstruction grid)
+      run: |
+        pip install pytest
+        python -m pytest -q tests

@@ -19,19 +19,19 @@ def zernike_parameters(filename, npix=256, diameter=10, thr=20):
     params = [[Cr[:,i,:,:,:], C['zi'], Npix, thr] for i in range(Cr.shape[1])]
     return np.array(params, dtype=object), C['nu']
 
-def save_fits(data, nu, args, filename):
+def save_fits(data, nu, args, filename, centre=None):
     # Save as fits files
     if args.output_eight and args.Stokes==None:
-        write_fits_eight(data, nu, args.diameter, filename)
+        write_fits_eight(data, nu, args.diameter, filename, centre=centre)
         print("Saved as 8 files with prefix %s"%filename)
     elif args.output_eight and args.Stokes!=None:
         print("8 output files can be created for Jones formalism only, not for Mueller")
         print("!WARNING: No output file created")
     else:
-        write_fits(data.real, nu, args.diameter, filename+'_re.fits')
+        write_fits(data.real, nu, args.diameter, filename+'_re.fits', centre=centre)
         print("Saved Real part as %s_re.fits"%filename)
         if args.Stokes==None:
-            write_fits(data.imag, nu, args.diameter, filename+'_im.fits')
+            write_fits(data.imag, nu, args.diameter, filename+'_im.fits', centre=centre)
             print("Saved Imaginary part as %s_im.fits"%filename)
 
 def main(argv):
@@ -98,8 +98,11 @@ def main(argv):
     # Cut the beam to the specified diameter
 
     if len(B.shape)==4: B = np.expand_dims(B, axis=0)
+    # 0-based pixel of the beam centre: n / 2 on the reconstruction grid (spatial.Zernike.unit_disk)
+    centre = B.shape[-1] / 2.0
     if args.diameter!=10:
         c, r = int(B.shape[-1]/2), int(args.pixels/2)
+        centre -= c - r  # the crop window starts at pixel c - r
         if args.pixels%2==0: B = B[...,c-r:c+r,c-r:c+r]
         else: B = B[...,c-r:c+r+1,c-r:c+r+1]
     print("Cube shape", B.shape)
@@ -125,5 +128,5 @@ def main(argv):
             data = np.zeros((B.shape[0],1,1,B.shape[3],B.shape[4]), dtype=complex)
             data[:,0,0,:,:] = data_M[:,ind[0][0],ind[1][0],...]
         filename = filename+'_'+m
-        save_fits(data, nu, args, filename)
-    else: save_fits(B, nu, args, filename)    
+        save_fits(data, nu, args, filename, centre=centre)
+    else: save_fits(B, nu, args, filename, centre=centre)    
